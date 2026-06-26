@@ -1,0 +1,21 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+
+        <groupId>com.elpp</groupId>
+
+        <artifactId>enterprise-loan-processing-platform</artifactId>
+
+        <version>1.0.0-SNAPSHOT</version>
+
+        <relativePath>../../pom.xml</relativePath>
+
+    </parent>
+
+    <artifactId>common</artifactId>
+
+    <packaging>jar</packaging>
+
+</project>
