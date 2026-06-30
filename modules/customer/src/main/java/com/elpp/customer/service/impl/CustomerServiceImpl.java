@@ -34,7 +34,8 @@ public class CustomerServiceImpl implements CustomerService {
         customerMapper.toRecord(request,customerRecord);
 
         // Business Logic
-        customerRecord.setCustomerNumber(generateCustomerNumber());
+        String lastCustomerNumber= customerRepository.getLastCustomerNumber();
+        customerRecord.setCustomerNumber(generateCustomerNumber(lastCustomerNumber));
         customerRecord.setStatus("ACTIVE");
 
         // Save to Database
@@ -81,11 +82,18 @@ public class CustomerServiceImpl implements CustomerService {
                     ,responses);
     }
 
-    /**
-     * Temporary implementation.
-     * Later we will generate this from the database.
-     */
-    private String generateCustomerNumber() {
-        return "CUST000001";
+
+    private String generateCustomerNumber(String lastCustomerNumber) {
+        //FIRST CUSTOMER
+        if(lastCustomerNumber==null){
+            return "CUST000001";
+        }
+        //REMOVE "CUST"
+        String numericPart=lastCustomerNumber.substring(4);
+        //CONVERT INTO INTEGE
+        int number=Integer.parseInt(numericPart);
+        //INCREMENT
+        number++;
+        return String.format("CUST%06d",number);
     }
 }

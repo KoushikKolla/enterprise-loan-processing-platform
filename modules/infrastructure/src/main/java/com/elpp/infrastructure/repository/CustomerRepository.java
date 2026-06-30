@@ -55,4 +55,13 @@ public class CustomerRepository {
                 .or(CUSTOMERS.PAN_NUMBER.likeIgnoreCase(searchKeyword))
                 .fetch();
     }
+
+    public String getLastCustomerNumber(){
+        return dsl
+                .select(CUSTOMERS.CUSTOMER_NUMBER)
+                .from(CUSTOMERS)
+                .orderBy(CUSTOMERS.ID.desc())
+                .limit(1)
+                .fetchOne(CUSTOMERS.CUSTOMER_NUMBER);
+    }
 }
