@@ -1,0 +1,11 @@
+com\elpp\infrastructure\jooq\generated\DefaultCatalog.class
+com\elpp\infrastructure\jooq\generated\Keys.class
+com\elpp\infrastructure\jooq\generated\tables\records\CustomersRecord.class
+com\elpp\infrastructure\jooq\generated\tables\Customers.class
+com\elpp\infrastructure\jooq\generated\Indexes.class
+com\elpp\infrastructure\jooq\generated\tables\FlywaySchemaHistory.class
+com\elpp\infrastructure\repository\CustomerRepository.class
+com\elpp\infrastructure\jooq\generated\tables\records\FlywaySchemaHistoryRecord.class
+com\elpp\infrastructure\jooq\generated\Tables.class
+com\elpp\infrastructure\config\JooqConfig.class
+com\elpp\infrastructure\jooq\generated\EnterpriseLoanDb.class

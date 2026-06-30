@@ -29,9 +29,24 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
     </properties>
 
+    <build>
+    <pluginManagement>
+        <plugins>
+        <plugin>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen-maven</artifactId>
+            <version>3.20.5</version>
+        </plugin>
+        </plugins>
+    </pluginManagement>
+    </build>
+
     <modules>
-        <module>apps/loan-platform-app</module>
         <module>modules/common</module>
+        <module>modules/customer</module>
+        <module>modules/infrastructure</module>
+        <module>apps/loan-platform-app</module>
+
     </modules>
 
 </project>
