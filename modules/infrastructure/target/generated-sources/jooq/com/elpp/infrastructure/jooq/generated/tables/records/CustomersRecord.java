@@ -218,6 +218,38 @@ public class CustomersRecord extends UpdatableRecordImpl<CustomersRecord> {
         return (LocalDateTime) get(13);
     }
 
+    /**
+     * Setter for
+     * <code>enterprise_loan_db.customers.last_mobile_updated_at</code>.
+     */
+    public void setLastMobileUpdatedAt(LocalDateTime value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for
+     * <code>enterprise_loan_db.customers.last_mobile_updated_at</code>.
+     */
+    public LocalDateTime getLastMobileUpdatedAt() {
+        return (LocalDateTime) get(14);
+    }
+
+    /**
+     * Setter for
+     * <code>enterprise_loan_db.customers.last_email_updated_at</code>.
+     */
+    public void setLastEmailUpdatedAt(LocalDateTime value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for
+     * <code>enterprise_loan_db.customers.last_email_updated_at</code>.
+     */
+    public LocalDateTime getLastEmailUpdatedAt() {
+        return (LocalDateTime) get(15);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -241,7 +273,7 @@ public class CustomersRecord extends UpdatableRecordImpl<CustomersRecord> {
     /**
      * Create a detached, initialised CustomersRecord
      */
-    public CustomersRecord(Long id, String customerNumber, String firstName, String lastName, String email, String mobileNumber, String panNumber, String aadhaarNumber, LocalDate dateOfBirth, String employmentType, BigDecimal annualIncome, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CustomersRecord(Long id, String customerNumber, String firstName, String lastName, String email, String mobileNumber, String panNumber, String aadhaarNumber, LocalDate dateOfBirth, String employmentType, BigDecimal annualIncome, String status, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime lastMobileUpdatedAt, LocalDateTime lastEmailUpdatedAt) {
         super(Customers.CUSTOMERS);
 
         setId(id);
@@ -258,6 +290,8 @@ public class CustomersRecord extends UpdatableRecordImpl<CustomersRecord> {
         setStatus(status);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
+        setLastMobileUpdatedAt(lastMobileUpdatedAt);
+        setLastEmailUpdatedAt(lastEmailUpdatedAt);
         resetChangedOnNotNull();
     }
 }

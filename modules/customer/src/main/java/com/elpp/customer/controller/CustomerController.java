@@ -2,6 +2,7 @@ package com.elpp.customer.controller;
 
 import com.elpp.common.response.ApiResponse;
 import com.elpp.customer.dto.request.CreateCustomerRequest;
+import com.elpp.customer.dto.request.UpdateMobileRequest;
 import com.elpp.customer.dto.response.CustomerResponse;
 import com.elpp.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -44,5 +45,10 @@ public class CustomerController {
     @GetMapping("/search")
     public ApiResponse<List<CustomerResponse>> searchCustomers(@RequestParam @jakarta.validation.constraints.NotBlank(message = "Keyword cannot be blank") String keyword){
         return customerService.searchCustomers(keyword);
+    }
+    @PutMapping("/{customerNumber}/mobile")
+    public ApiResponse<CustomerResponse> updateMobile(@PathVariable String customerNumber,
+                                                      @Valid @RequestBody UpdateMobileRequest request){
+        return customerService.updateMobile(customerNumber,request);
     }
 }

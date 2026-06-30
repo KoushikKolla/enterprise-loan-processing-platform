@@ -4,6 +4,7 @@ import com.elpp.common.exception.DuplicateResourceException;
 import com.elpp.common.exception.ResourceNotFoundException;
 import com.elpp.common.response.ApiResponse;
 import com.elpp.customer.dto.request.CreateCustomerRequest;
+import com.elpp.customer.dto.request.UpdateMobileRequest;
 import com.elpp.customer.dto.response.CustomerResponse;
 import com.elpp.customer.enums.CustomerStatus;
 import com.elpp.customer.mapper.CustomerMapper;
@@ -13,6 +14,7 @@ import com.elpp.infrastructure.repository.CustomerRepository;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -83,6 +85,25 @@ public class CustomerServiceImpl implements CustomerService {
         return new ApiResponse<>(true,
                 "CUSTOMERS FOUND SUCCESSFULLY"
                     ,responses);
+    }
+
+    @Override
+    public ApiResponse<CustomerResponse> updateMobile(String customerNumber, UpdateMobileRequest request) {
+        CustomersRecord customer= customerRepository.findByCustomerNumber(customerNumber);
+        if(customer==null){
+            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
+        }
+        if (customer.getMobileNumber().equals(request.getMobileNumber())) {
+            throw new DuplicateResourceException("NEW MOBILE NUMBER MUST BE DIFFERENT FROM CURRENT MOBILE NUMBER.");
+        }
+        if(customerRepository.existsByMobileNumber(request.getMobileNumber())){
+            throw new DuplicateResourceException("MOBILE NUMBER IS ALREADY REGISTERED. ");
+        }
+        customer.setMobileNumber(request.getMobileNumber());
+        customer.setLastMobileUpdatedAt(LocalDateTime.now());
+        CustomersRecord updatedCustomer=customerRepository.save(customer);
+        CustomerResponse response=customerMapper.toResponse(updatedCustomer);
+        return new ApiResponse<>(true,"MOBILE NUMBER UPDATED SUCCESSFULLY.",response);
     }
 
 

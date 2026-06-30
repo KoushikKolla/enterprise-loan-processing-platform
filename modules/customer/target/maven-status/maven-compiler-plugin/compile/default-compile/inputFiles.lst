@@ -1,6 +1,11 @@
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\controller\CustomerController.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\request\CreateCustomerRequest.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\request\UpdateAnnualIncomeRequest.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\request\UpdateEmailRequest.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\request\UpdateEmploymentRequest.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\request\UpdateMobileRequest.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\dto\response\CustomerResponse.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\enums\CustomerStatus.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\enums\EmploymentType.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\mapper\CustomerMapper.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\customer\src\main\java\com\elpp\customer\service\CustomerService.java

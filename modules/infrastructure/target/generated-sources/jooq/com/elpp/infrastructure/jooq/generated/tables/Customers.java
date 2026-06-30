@@ -125,6 +125,18 @@ public class Customers extends TableImpl<CustomersRecord> {
      */
     public final TableField<CustomersRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "");
 
+    /**
+     * The column
+     * <code>enterprise_loan_db.customers.last_mobile_updated_at</code>.
+     */
+    public final TableField<CustomersRecord, LocalDateTime> LAST_MOBILE_UPDATED_AT = createField(DSL.name("last_mobile_updated_at"), SQLDataType.LOCALDATETIME(0), this, "");
+
+    /**
+     * The column
+     * <code>enterprise_loan_db.customers.last_email_updated_at</code>.
+     */
+    public final TableField<CustomersRecord, LocalDateTime> LAST_EMAIL_UPDATED_AT = createField(DSL.name("last_email_updated_at"), SQLDataType.LOCALDATETIME(0), this, "");
+
     private Customers(Name alias, Table<CustomersRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

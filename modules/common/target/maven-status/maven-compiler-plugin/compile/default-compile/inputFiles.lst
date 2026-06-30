@@ -1,4 +1,5 @@
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\common\src\main\java\com\elpp\common\exception\BusinessException.java
+C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\common\src\main\java\com\elpp\common\exception\DuplicateResourceException.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\common\src\main\java\com\elpp\common\exception\GlobalExceptionHandler.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\common\src\main\java\com\elpp\common\exception\ResourceNotFoundException.java
 C:\Users\KoushikKolla(Ext)\Downloads\enterprise-loan-processing-platform\modules\common\src\main\java\com\elpp\common\response\ApiResponse.java
