@@ -10,5 +10,6 @@ public interface CustomerService {
     ApiResponse<CustomerResponse> registerCustomer(CreateCustomerRequest request);
     ApiResponse<CustomerResponse> getCustomerByCustomerNumber(String customerNumber);
     ApiResponse<List<CustomerResponse>> getAllCustomers();
+    ApiResponse<List<CustomerResponse>> getCustomers(int page,int size);
 }
 

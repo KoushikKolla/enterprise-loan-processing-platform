@@ -36,4 +36,12 @@ public class CustomerRepository {
         return dsl.selectFrom(CUSTOMERS)
                 .fetch();
     }
+
+    public Result<CustomersRecord> findAll(int page,int size){
+        int offset=page*size;
+        return dsl.selectFrom(CUSTOMERS)
+                .limit(size)
+                .offset(offset)
+                .fetch();
+    }
 }

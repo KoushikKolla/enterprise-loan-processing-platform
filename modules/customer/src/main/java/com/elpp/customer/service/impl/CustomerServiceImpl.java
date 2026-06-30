@@ -62,7 +62,14 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse<List<CustomerResponse>> getAllCustomers() {
         Result<CustomersRecord> customers=customerRepository.findall();
         List<CustomerResponse> responses= customerMapper.toResponseList(customers);
-        return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCESSFULLY",responses);
+        return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCCESSFULLY",responses);
+    }
+
+    @Override
+    public ApiResponse<List<CustomerResponse>> getCustomers(int page, int size) {
+        Result<CustomersRecord> customers=customerRepository.findAll(page, size);
+        List<CustomerResponse> responses= customerMapper.toResponseList(customers);
+        return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCCESSFULLY",responses);
     }
 
     /**

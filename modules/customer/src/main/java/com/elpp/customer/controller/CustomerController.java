@@ -33,4 +33,9 @@ public class CustomerController {
     public ApiResponse<List<CustomerResponse>> getAllCustomers(){
         return customerService.getAllCustomers();
     }
+    @GetMapping("/page")
+    public ApiResponse<List<CustomerResponse>> getCustomers(@RequestParam(defaultValue = "0")int page,
+                                                            @RequestParam(defaultValue = "10")int size){
+        return customerService.getCustomers(page, size);
+    }
 }
