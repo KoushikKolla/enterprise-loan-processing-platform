@@ -32,7 +32,7 @@ public class CustomerRepository {
                 .fetchOne();
 
     }
-    public Result<CustomersRecord> findall(){
+    public Result<CustomersRecord> findAll(){
         return dsl.selectFrom(CUSTOMERS)
                 .fetch();
     }
@@ -63,5 +63,35 @@ public class CustomerRepository {
                 .orderBy(CUSTOMERS.ID.desc())
                 .limit(1)
                 .fetchOne(CUSTOMERS.CUSTOMER_NUMBER);
+    }
+    public boolean existsByMobileNumber(String mobileNumber){
+        return dsl.fetchExists(
+                dsl.selectOne()
+                        .from(CUSTOMERS)
+                        .where(CUSTOMERS.MOBILE_NUMBER.eq(mobileNumber))
+        );
+    }
+
+    public boolean existsByEmail(String email){
+        return dsl.fetchExists(dsl.selectOne()
+                .from(CUSTOMERS)
+                .where(CUSTOMERS.EMAIL.eq(email))
+        );
+    }
+
+    public boolean existsByPanNumber(String panNumber){
+        return dsl.fetchExists(
+                dsl.selectOne()
+                        .from(CUSTOMERS)
+                        .where(CUSTOMERS.PAN_NUMBER.eq(panNumber))
+        );
+    }
+
+    public boolean existsByAadhaarNumber(String aadhaarNumber){
+        return dsl.fetchExists(
+                dsl.selectOne()
+                        .from(CUSTOMERS)
+                        .where(CUSTOMERS.AADHAAR_NUMBER.eq(aadhaarNumber))
+        );
     }
 }
