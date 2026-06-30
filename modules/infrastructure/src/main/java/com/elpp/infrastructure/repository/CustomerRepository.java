@@ -44,4 +44,15 @@ public class CustomerRepository {
                 .offset(offset)
                 .fetch();
     }
+
+    public Result<CustomersRecord> findByKeyword(String keyword){
+        String searchKeyword ="%"+ keyword +"%";
+        return dsl.selectFrom(CUSTOMERS)
+                .where(CUSTOMERS.FIRST_NAME.likeIgnoreCase(searchKeyword))
+                .or(CUSTOMERS.LAST_NAME.likeIgnoreCase(searchKeyword))
+                .or(CUSTOMERS.EMAIL.likeIgnoreCase(searchKeyword))
+                .or(CUSTOMERS.MOBILE_NUMBER.likeIgnoreCase(searchKeyword))
+                .or(CUSTOMERS.PAN_NUMBER.likeIgnoreCase(searchKeyword))
+                .fetch();
+    }
 }

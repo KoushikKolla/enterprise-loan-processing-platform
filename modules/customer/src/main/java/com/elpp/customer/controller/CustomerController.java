@@ -37,8 +37,12 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
     @GetMapping("/page")
-    public ApiResponse<List<CustomerResponse>> getCustomers(@RequestParam(defaultValue = "0") @Min(value = 0, message = "Page must be 0 or greater")int page,
+    public ApiResponse<List<CustomerResponse>> getCustomers(@RequestParam(defaultValue = "0") @Min(value = 0, message = "Page must be 0 or greater") int page,
                                                             @RequestParam(defaultValue = "10") @Min(value = 1, message = "Size must be at least 1") int size){
         return customerService.getCustomers(page, size);
+    }
+    @GetMapping("/search")
+    public ApiResponse<List<CustomerResponse>> searchCustomers(@RequestParam @jakarta.validation.constraints.NotBlank(message = "Keyword cannot be blank") String keyword){
+        return customerService.searchCustomers(keyword);
     }
 }

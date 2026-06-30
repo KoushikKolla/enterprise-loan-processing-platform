@@ -11,5 +11,6 @@ public interface CustomerService {
     ApiResponse<CustomerResponse> getCustomerByCustomerNumber(String customerNumber);
     ApiResponse<List<CustomerResponse>> getAllCustomers();
     ApiResponse<List<CustomerResponse>> getCustomers(int page,int size);
+    ApiResponse<List<CustomerResponse>> searchCustomers(String keyword);
 }
 

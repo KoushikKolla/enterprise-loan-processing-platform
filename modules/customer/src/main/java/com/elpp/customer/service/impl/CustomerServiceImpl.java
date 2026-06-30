@@ -72,6 +72,15 @@ public class CustomerServiceImpl implements CustomerService {
         return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCCESSFULLY",responses);
     }
 
+    @Override
+    public ApiResponse<List<CustomerResponse>> searchCustomers(String keyword) {
+        Result<CustomersRecord> customers= customerRepository.findByKeyword(keyword);
+        List<CustomerResponse> responses = customerMapper.toResponseList(customers);
+        return new ApiResponse<>(true,
+                "CUSTOMERS FOUND SUCCESSFULLY"
+                    ,responses);
+    }
+
     /**
      * Temporary implementation.
      * Later we will generate this from the database.
