@@ -5,12 +5,15 @@ import com.elpp.customer.dto.request.CreateCustomerRequest;
 import com.elpp.customer.dto.response.CustomerResponse;
 import com.elpp.customer.service.CustomerService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customers")
+@Validated
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -34,8 +37,8 @@ public class CustomerController {
         return customerService.getAllCustomers();
     }
     @GetMapping("/page")
-    public ApiResponse<List<CustomerResponse>> getCustomers(@RequestParam(defaultValue = "0")int page,
-                                                            @RequestParam(defaultValue = "10")int size){
+    public ApiResponse<List<CustomerResponse>> getCustomers(@RequestParam(defaultValue = "0") @Min(value = 0, message = "Page must be 0 or greater")int page,
+                                                            @RequestParam(defaultValue = "10") @Min(value = 1, message = "Size must be at least 1") int size){
         return customerService.getCustomers(page, size);
     }
 }

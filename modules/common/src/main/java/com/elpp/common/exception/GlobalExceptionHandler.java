@@ -1,10 +1,14 @@
 package com.elpp.common.exception;
 
 import com.elpp.common.response.ApiResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.swing.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,4 +33,19 @@ public class GlobalExceptionHandler {
                 badRequest().
                 body(response);
     }
+@ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(ConstraintViolationException ex){
+        String message= ex.getConstraintViolations()
+                .stream()
+                .findFirst()
+                .map(ConstraintViolation::getMessage)
+                .orElse("Validation failed");
+        ApiResponse<Void> response= new ApiResponse<>(
+                false,
+                message,
+                null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(response);
+}
 }
