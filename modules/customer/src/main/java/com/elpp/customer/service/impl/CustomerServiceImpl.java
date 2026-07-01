@@ -1,6 +1,7 @@
 package com.elpp.customer.service.impl;
 
 import com.elpp.common.exception.DuplicateResourceException;
+import com.elpp.common.exception.InvalidRequestException;
 import com.elpp.common.exception.ResourceNotFoundException;
 import com.elpp.common.response.ApiResponse;
 import com.elpp.customer.dto.request.CreateCustomerRequest;
@@ -14,6 +15,7 @@ import com.elpp.infrastructure.repository.CustomerRepository;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -96,6 +98,9 @@ public class CustomerServiceImpl implements CustomerService {
         if (customer.getMobileNumber().equals(request.getMobileNumber())) {
             throw new DuplicateResourceException("NEW MOBILE NUMBER MUST BE DIFFERENT FROM CURRENT MOBILE NUMBER.");
         }
+        //Validates the update duration set to 15 days
+        validateMobileUpdatePeriod(customer);
+
         if(customerRepository.existsByMobileNumber(request.getMobileNumber())){
             throw new DuplicateResourceException("MOBILE NUMBER IS ALREADY REGISTERED. ");
         }
@@ -134,6 +139,18 @@ public class CustomerServiceImpl implements CustomerService {
         }
         if(customerRepository.existsByPanNumber(request.getPanNumber())){
             throw new DuplicateResourceException("PAN NUMBER IS ALREADY REGISTERED");
+        }
+    }
+
+    private void validateMobileUpdatePeriod(CustomersRecord customer){
+        LocalDateTime lastUpdated=customer.getLastMobileUpdatedAt();
+        //FIRST UPDATE IS ALWAYS ALLOWED
+        if(lastUpdated==null){
+            return;
+        }
+        long days= Duration.between(lastUpdated,LocalDateTime.now()).toDays();
+        if(days<15){
+            throw new InvalidRequestException("MOBILE NUMBER CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
         }
     }
 }

@@ -55,5 +55,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(response);
 }
+@ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidRequestException(InvalidRequestException ex){
+        ApiResponse<Void> response= new ApiResponse<>(false,ex.getMessage(),null);
+        return ResponseEntity
+                .badRequest()
+                .body(response);
+}
 
 }
