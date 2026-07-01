@@ -1,5 +1,6 @@
 package com.elpp.customer.service.impl;
 
+import com.elpp.common.constants.CustomerMessages;
 import com.elpp.common.exception.DuplicateResourceException;
 import com.elpp.common.exception.InvalidRequestException;
 import com.elpp.common.exception.ResourceNotFoundException;
@@ -47,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Convert CustomersRecord -> Response DTO
         return buildSuccessResponse(
                 customerRecord,
-                "CUSTOMER SAVED SUCCESSFULLY."
+                CustomerMessages.CUSTOMER_REGISTERED
         );
     }
 
@@ -56,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomersRecord customers=getCustomerOrThrow(customerNumber);
         CustomerResponse response= customerMapper.toResponse(customers);
         return new ApiResponse<>(true,
-                "CUSTOMER FOUND",
+                CustomerMessages.CUSTOMER_FETCHED,
                 response);
     }
 
@@ -64,14 +65,14 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse<List<CustomerResponse>> getAllCustomers() {
         Result<CustomersRecord> customers=customerRepository.findAll();
         List<CustomerResponse> responses= customerMapper.toResponseList(customers);
-        return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCCESSFULLY",responses);
+        return new ApiResponse<>(true,CustomerMessages.CUSTOMERS_FETCHED,responses);
     }
 
     @Override
     public ApiResponse<List<CustomerResponse>> getCustomers(int page, int size) {
         Result<CustomersRecord> customers=customerRepository.findAll(page, size);
         List<CustomerResponse> responses= customerMapper.toResponseList(customers);
-        return new ApiResponse<>(true,"CUSTOMERS FETCHED SUCCESSFULLY",responses);
+        return new ApiResponse<>(true,CustomerMessages.CUSTOMERS_FETCHED,responses);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class CustomerServiceImpl implements CustomerService {
         Result<CustomersRecord> customers= customerRepository.findByKeyword(keyword);
         List<CustomerResponse> responses = customerMapper.toResponseList(customers);
         return new ApiResponse<>(true,
-                "CUSTOMERS FOUND SUCCESSFULLY"
+                CustomerMessages.CUSTOMERS_FOUND
                     ,responses);
     }
 
@@ -87,19 +88,19 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse<CustomerResponse> updateMobile(String customerNumber, UpdateMobileRequest request) {
         CustomersRecord customer=getCustomerOrThrow(customerNumber);
         if (customer.getMobileNumber().equals(request.getMobileNumber())) {
-            throw new DuplicateResourceException("NEW MOBILE NUMBER MUST BE DIFFERENT FROM CURRENT MOBILE NUMBER.");
+            throw new DuplicateResourceException(CustomerMessages.SAME_MOBILE);
         }
         //Validates the update duration set to 15 days
         validateMobileUpdatePeriod(customer);
 
         if(customerRepository.existsByMobileNumber(request.getMobileNumber())){
-            throw new DuplicateResourceException("MOBILE NUMBER IS ALREADY REGISTERED. ");
+            throw new DuplicateResourceException(CustomerMessages.MOBILE_ALREADY_REGISTERED);
         }
         customer.setMobileNumber(request.getMobileNumber());
         customer.setLastMobileUpdatedAt(LocalDateTime.now());
         return buildSuccessResponse(
                 customer,
-                "MOBILE UPDATED SUCCESSFULLY."
+                CustomerMessages.MOBILE_UPDATED
         );
     }
 
@@ -107,15 +108,15 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse<CustomerResponse> updateEmail(String customerNumber, UpdateEmailRequest request) {
         CustomersRecord customer= customerRepository.findByCustomerNumber(customerNumber);
         if(customer==null){
-            throw  new ResourceNotFoundException("CUSTOMER NOT FOUND");
+            throw  new ResourceNotFoundException(CustomerMessages.CUSTOMER_NOT_FOUND);
         }
         if(customer.getEmail().equalsIgnoreCase(request.getEmail())){
-            throw new InvalidRequestException("NEW EMAIL MUST BE DIFFERENT FROM CURRENT EMAIL");
+            throw new InvalidRequestException(CustomerMessages.SAME_EMAIL);
         }
         validateEmailUpdatePeriod(customer);
         //DUPLICATE EMAIL
         if(customerRepository.existsByMobileNumber(request.getEmail())){
-            throw new DuplicateResourceException("EMAIL IS ALREADY REGISTERED");
+            throw new DuplicateResourceException(CustomerMessages.EMAIL_ALREADY_REGISTERED);
         }
         customer.setEmail(request.getEmail());
 
@@ -125,7 +126,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         return buildSuccessResponse(
                 updatedCustomer,
-                "EMAIL UPDATED SUCCESSFULLY."
+                CustomerMessages.EMAIL_UPDATED
         );
     }
 
@@ -133,13 +134,13 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse<CustomerResponse> updateEmployment(String customerNumber, UpdateEmploymentRequest request) {
         CustomersRecord customer=getCustomerOrThrow(customerNumber);
         if(customer.getEmploymentType().equals(request.getEmploymentType().name())){
-            throw new InvalidRequestException("NEW EMPLOYMENT TYPE MUST BE DIFFERENT FROM EMPLOYMENT TYPE");
+            throw new InvalidRequestException(CustomerMessages.SAME_EMPLOYMENT);
         }
         customer.setEmploymentType(request.getEmploymentType().name());
 
         return buildSuccessResponse(
                 customer,
-                "EMPLOYMENT UPDATED SUCCESSFULLY."
+                CustomerMessages.EMPLOYMENT_UPDATED
         );
     }
 
@@ -148,14 +149,14 @@ public class CustomerServiceImpl implements CustomerService {
         CustomersRecord customer=getCustomerOrThrow(customerNumber);
 
         if (customer.getAnnualIncome().compareTo(request.getAnnualIncome()) == 0) {
-            throw new InvalidRequestException("NEW ANNUAL INCOME MUST BE DIFFERENT FROM CURRENT ANNUAL INCOME.");
+            throw new InvalidRequestException(CustomerMessages.SAME_ANNUAL_INCOME);
         }
 
         customer.setAnnualIncome(request.getAnnualIncome());
 
         return buildSuccessResponse(
                 customer,
-                "INCOME UPDATED SUCCESSFULLY."
+                CustomerMessages.ANNUAL_INCOME_UPDATED
         );
     }
 
@@ -178,16 +179,16 @@ public class CustomerServiceImpl implements CustomerService {
     private void validateDuplicateCustomer(CreateCustomerRequest request) {
         //CHECKS DUPLICATE NUMBERS ARE THERE ARE NOT BEFORE REGISTERING
         if (customerRepository.existsByMobileNumber(request.getMobileNumber())) {
-            throw new DuplicateResourceException("MOBILE NUMBER IS ALREADY REGISTERED");
+            throw new DuplicateResourceException(CustomerMessages.MOBILE_ALREADY_REGISTERED);
         }
         if(customerRepository.existsByEmail(request.getEmail())){
-            throw new DuplicateResourceException("EMAIL IS ALREADY REGISTERED");
+            throw new DuplicateResourceException(CustomerMessages.EMAIL_ALREADY_REGISTERED);
         }
         if(customerRepository.existsByAadhaarNumber(request.getAadhaarNumber())){
-            throw new DuplicateResourceException("AADHAAR NUMBER IS ALREADY REGISTERED");
+            throw new DuplicateResourceException(CustomerMessages.AADHAAR_ALREADY_REGISTERED);
         }
         if(customerRepository.existsByPanNumber(request.getPanNumber())){
-            throw new DuplicateResourceException("PAN NUMBER IS ALREADY REGISTERED");
+            throw new DuplicateResourceException(CustomerMessages.PAN_ALREADY_REGISTERED);
         }
     }
 
@@ -199,7 +200,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
         long days= Duration.between(lastUpdated,LocalDateTime.now()).toDays();
         if(days<15){
-            throw new InvalidRequestException("MOBILE NUMBER CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
+            throw new InvalidRequestException(CustomerMessages.MOBILE_UPDATE_RESTRICTED);
         }
     }
     private void validateEmailUpdatePeriod(CustomersRecord customer){
@@ -210,7 +211,7 @@ public class CustomerServiceImpl implements CustomerService {
         long days= Duration.between(lastUpdated,LocalDateTime.now()).toDays();
 
         if(days<15){
-            throw new InvalidRequestException("EMAIL CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
+            throw new InvalidRequestException(CustomerMessages.EMAIL_UPDATE_RESTRICTED);
         }
     }
 
@@ -221,7 +222,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (customer == null) {
             throw new ResourceNotFoundException(
-                    "CUSTOMER NOT FOUND"
+                    CustomerMessages.CUSTOMER_NOT_FOUND
             );
         }
         return customer;
