@@ -44,22 +44,17 @@ public class CustomerServiceImpl implements CustomerService {
         customerRecord.setCustomerNumber(generateCustomerNumber(lastCustomerNumber));
         customerRecord.setStatus(CustomerStatus.PENDING.name());
 
-        // Save to Database
-        CustomersRecord savedCustomer = customerRepository.save(customerRecord);
-
         // Convert CustomersRecord -> Response DTO
-        CustomerResponse response = customerMapper.toResponse(savedCustomer);
-
-        return new ApiResponse<>(true,"CUSTOMER REGISTERED SUCCESSFULLY",response);
+        return buildSuccessResponse(
+                customerRecord,
+                "CUSTOMER SAVED SUCCESSFULLY."
+        );
     }
 
     @Override
     public ApiResponse<CustomerResponse> getCustomerByCustomerNumber(String customerNumber) {
-        CustomersRecord customersRecord=customerRepository.findByCustomerNumber(customerNumber);
-        if(customersRecord==null){
-            throw  new ResourceNotFoundException("CUSTOMER NOT FOUND WITH CUSTOMER NUMBER:"+ customerNumber);
-        }
-        CustomerResponse response= customerMapper.toResponse(customersRecord);
+        CustomersRecord customers=getCustomerOrThrow(customerNumber);
+        CustomerResponse response= customerMapper.toResponse(customers);
         return new ApiResponse<>(true,
                 "CUSTOMER FOUND",
                 response);
@@ -90,10 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public ApiResponse<CustomerResponse> updateMobile(String customerNumber, UpdateMobileRequest request) {
-        CustomersRecord customer= customerRepository.findByCustomerNumber(customerNumber);
-        if(customer==null){
-            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
-        }
+        CustomersRecord customer=getCustomerOrThrow(customerNumber);
         if (customer.getMobileNumber().equals(request.getMobileNumber())) {
             throw new DuplicateResourceException("NEW MOBILE NUMBER MUST BE DIFFERENT FROM CURRENT MOBILE NUMBER.");
         }
@@ -105,9 +97,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
         customer.setMobileNumber(request.getMobileNumber());
         customer.setLastMobileUpdatedAt(LocalDateTime.now());
-        CustomersRecord updatedCustomer=customerRepository.save(customer);
-        CustomerResponse response=customerMapper.toResponse(updatedCustomer);
-        return new ApiResponse<>(true,"MOBILE NUMBER UPDATED SUCCESSFULLY.",response);
+        return buildSuccessResponse(
+                customer,
+                "MOBILE UPDATED SUCCESSFULLY."
+        );
     }
 
     @Override
@@ -130,37 +123,29 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomersRecord updatedCustomer=customerRepository.save(customer);
 
-        CustomerResponse response=customerMapper.toResponse(updatedCustomer);
-
-        return new ApiResponse<>(true,"EMAIL UPDATED SUCCESSFULLY",response);
+        return buildSuccessResponse(
+                updatedCustomer,
+                "EMAIL UPDATED SUCCESSFULLY."
+        );
     }
 
     @Override
     public ApiResponse<CustomerResponse> updateEmployment(String customerNumber, UpdateEmploymentRequest request) {
-        CustomersRecord customer=customerRepository.findByCustomerNumber(customerNumber);
-        if(customer==null){
-            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
-        }
+        CustomersRecord customer=getCustomerOrThrow(customerNumber);
         if(customer.getEmploymentType().equals(request.getEmploymentType().name())){
             throw new InvalidRequestException("NEW EMPLOYMENT TYPE MUST BE DIFFERENT FROM EMPLOYMENT TYPE");
         }
         customer.setEmploymentType(request.getEmploymentType().name());
 
-        CustomersRecord updatedCustomer =customerRepository.save(customer);
-
-        CustomerResponse response= customerMapper.toResponse(updatedCustomer);
-
-        return new ApiResponse<>(true,"EMPLOYMENT TYPE UPDATED SUCCESSFULLY",response);
+        return buildSuccessResponse(
+                customer,
+                "EMPLOYMENT UPDATED SUCCESSFULLY."
+        );
     }
 
     @Override
     public ApiResponse<CustomerResponse> updateAnnualIncome(String customerNumber, UpdateAnnualIncomeRequest request) {
-        CustomersRecord customer =
-                customerRepository.findByCustomerNumber(customerNumber);
-
-        if (customer == null) {
-            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
-        }
+        CustomersRecord customer=getCustomerOrThrow(customerNumber);
 
         if (customer.getAnnualIncome().compareTo(request.getAnnualIncome()) == 0) {
             throw new InvalidRequestException("NEW ANNUAL INCOME MUST BE DIFFERENT FROM CURRENT ANNUAL INCOME.");
@@ -168,14 +153,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setAnnualIncome(request.getAnnualIncome());
 
-        CustomersRecord updatedCustomer = customerRepository.save(customer);
-
-        CustomerResponse response = customerMapper.toResponse(updatedCustomer);
-
-        return new ApiResponse<>(
-                true,
-                "ANNUAL INCOME UPDATED SUCCESSFULLY.",
-                response
+        return buildSuccessResponse(
+                customer,
+                "INCOME UPDATED SUCCESSFULLY."
         );
     }
 
@@ -232,5 +212,35 @@ public class CustomerServiceImpl implements CustomerService {
         if(days<15){
             throw new InvalidRequestException("EMAIL CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
         }
+    }
+
+    private CustomersRecord getCustomerOrThrow(String customerNumber) {
+
+        CustomersRecord customer =
+                customerRepository.findByCustomerNumber(customerNumber);
+
+        if (customer == null) {
+            throw new ResourceNotFoundException(
+                    "CUSTOMER NOT FOUND"
+            );
+        }
+        return customer;
+    }
+
+    private ApiResponse<CustomerResponse> buildSuccessResponse(
+            CustomersRecord customer,
+            String message) {
+
+        CustomersRecord updatedCustomer =
+                customerRepository.save(customer);
+
+        CustomerResponse response =
+                customerMapper.toResponse(updatedCustomer);
+
+        return new ApiResponse<>(
+                true,
+                message,
+                response
+        );
     }
 }
