@@ -4,8 +4,7 @@ import com.elpp.common.exception.DuplicateResourceException;
 import com.elpp.common.exception.InvalidRequestException;
 import com.elpp.common.exception.ResourceNotFoundException;
 import com.elpp.common.response.ApiResponse;
-import com.elpp.customer.dto.request.CreateCustomerRequest;
-import com.elpp.customer.dto.request.UpdateMobileRequest;
+import com.elpp.customer.dto.request.*;
 import com.elpp.customer.dto.response.CustomerResponse;
 import com.elpp.customer.enums.CustomerStatus;
 import com.elpp.customer.mapper.CustomerMapper;
@@ -111,6 +110,76 @@ public class CustomerServiceImpl implements CustomerService {
         return new ApiResponse<>(true,"MOBILE NUMBER UPDATED SUCCESSFULLY.",response);
     }
 
+    @Override
+    public ApiResponse<CustomerResponse> updateEmail(String customerNumber, UpdateEmailRequest request) {
+        CustomersRecord customer= customerRepository.findByCustomerNumber(customerNumber);
+        if(customer==null){
+            throw  new ResourceNotFoundException("CUSTOMER NOT FOUND");
+        }
+        if(customer.getEmail().equalsIgnoreCase(request.getEmail())){
+            throw new InvalidRequestException("NEW EMAIL MUST BE DIFFERENT FROM CURRENT EMAIL");
+        }
+        validateEmailUpdatePeriod(customer);
+        //DUPLICATE EMAIL
+        if(customerRepository.existsByMobileNumber(request.getEmail())){
+            throw new DuplicateResourceException("EMAIL IS ALREADY REGISTERED");
+        }
+        customer.setEmail(request.getEmail());
+
+        customer.setLastEmailUpdatedAt(LocalDateTime.now());
+
+        CustomersRecord updatedCustomer=customerRepository.save(customer);
+
+        CustomerResponse response=customerMapper.toResponse(updatedCustomer);
+
+        return new ApiResponse<>(true,"EMAIL UPDATED SUCCESSFULLY",response);
+    }
+
+    @Override
+    public ApiResponse<CustomerResponse> updateEmployment(String customerNumber, UpdateEmploymentRequest request) {
+        CustomersRecord customer=customerRepository.findByCustomerNumber(customerNumber);
+        if(customer==null){
+            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
+        }
+        if(customer.getEmploymentType().equals(request.getEmploymentType().name())){
+            throw new InvalidRequestException("NEW EMPLOYMENT TYPE MUST BE DIFFERENT FROM EMPLOYMENT TYPE");
+        }
+        customer.setEmploymentType(request.getEmploymentType().name());
+
+        CustomersRecord updatedCustomer =customerRepository.save(customer);
+
+        CustomerResponse response= customerMapper.toResponse(updatedCustomer);
+
+        return new ApiResponse<>(true,"EMPLOYMENT TYPE UPDATED SUCCESSFULLY",response);
+    }
+
+    @Override
+    public ApiResponse<CustomerResponse> updateAnnualIncome(String customerNumber, UpdateAnnualIncomeRequest request) {
+        CustomersRecord customer =
+                customerRepository.findByCustomerNumber(customerNumber);
+
+        if (customer == null) {
+            throw new ResourceNotFoundException("CUSTOMER NOT FOUND");
+        }
+
+        if (customer.getAnnualIncome().compareTo(request.getAnnualIncome()) == 0) {
+            throw new InvalidRequestException("NEW ANNUAL INCOME MUST BE DIFFERENT FROM CURRENT ANNUAL INCOME.");
+        }
+
+        customer.setAnnualIncome(request.getAnnualIncome());
+
+        CustomersRecord updatedCustomer = customerRepository.save(customer);
+
+        CustomerResponse response = customerMapper.toResponse(updatedCustomer);
+
+        return new ApiResponse<>(
+                true,
+                "ANNUAL INCOME UPDATED SUCCESSFULLY.",
+                response
+        );
+    }
+
+
 
     private String generateCustomerNumber(String lastCustomerNumber) {
         //FIRST CUSTOMER
@@ -151,6 +220,17 @@ public class CustomerServiceImpl implements CustomerService {
         long days= Duration.between(lastUpdated,LocalDateTime.now()).toDays();
         if(days<15){
             throw new InvalidRequestException("MOBILE NUMBER CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
+        }
+    }
+    private void validateEmailUpdatePeriod(CustomersRecord customer){
+        LocalDateTime lastUpdated= customer.getLastEmailUpdatedAt();
+        if(lastUpdated==null){
+            return;
+        }
+        long days= Duration.between(lastUpdated,LocalDateTime.now()).toDays();
+
+        if(days<15){
+            throw new InvalidRequestException("EMAIL CAN ONLY BE UPDATED ONCE EVERY 15 DAYS");
         }
     }
 }

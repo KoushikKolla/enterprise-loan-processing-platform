@@ -1,8 +1,7 @@
 package com.elpp.customer.controller;
 
 import com.elpp.common.response.ApiResponse;
-import com.elpp.customer.dto.request.CreateCustomerRequest;
-import com.elpp.customer.dto.request.UpdateMobileRequest;
+import com.elpp.customer.dto.request.*;
 import com.elpp.customer.dto.response.CustomerResponse;
 import com.elpp.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -50,5 +49,20 @@ public class CustomerController {
     public ApiResponse<CustomerResponse> updateMobile(@PathVariable String customerNumber,
                                                       @Valid @RequestBody UpdateMobileRequest request){
         return customerService.updateMobile(customerNumber,request);
+    }
+    @PutMapping("/{customerNumber}/email")
+    public ApiResponse<CustomerResponse> updateEmail(@PathVariable String customerNumber,
+                                                      @Valid @RequestBody UpdateEmailRequest request){
+        return customerService.updateEmail(customerNumber,request);
+    }
+    @PutMapping("/{customerNumber}/employment")
+    public ApiResponse<CustomerResponse> updateEmployment(@PathVariable String customerNumber,
+                                                          @Valid @RequestBody UpdateEmploymentRequest request){
+        return customerService.updateEmployment(customerNumber,request);
+    }
+    @PutMapping("/{customerNumber}/annual-income")
+    public ApiResponse<CustomerResponse> updateAnnualIncome(@PathVariable String customerNumber,
+                                                            @Valid @RequestBody UpdateAnnualIncomeRequest request) {
+        return customerService.updateAnnualIncome(customerNumber, request);
     }
 }
